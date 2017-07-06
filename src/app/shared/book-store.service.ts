@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Book, Thumbnail} from './book';
+import { Book, Thumbnail } from './book';
 
 @Injectable()
 export class BookStoreService {
 
-books: Book[];
+  books: Book[];
 
   constructor() {
     this.books = [
@@ -29,6 +29,10 @@ books: Book[];
         'Dieses Buch führt Sie anhand eines zusammenhängenden Beispielprojekts...'
       )
     ]
+  }
+
+  getSingle(isbn) {
+    return this.books.find(book => book.isbn === isbn);
   }
 
   getAll() {
