@@ -32,14 +32,14 @@ export class BookStoreService {
   }
 
 
-   getSingle(isbn: string): Observable<Book> {
+  getSingle(isbn: string): Observable<Book> {
     return this.http
       .get(`${this.api}/book/${isbn}`)
       .retry(3)
       .map(response => response.json())
       .map(rawBook => BookFactory.fromObject(rawBook))
       .catch(this.errorHandler);
-}
+  }
 
   create(book: Book): Observable<any> {
     return this.http
@@ -59,7 +59,7 @@ export class BookStoreService {
       .catch(this.errorHandler);
   }
 
-   private errorHandler(error: Error | any): Observable<any> {
+  private errorHandler(error: Error | any): Observable<any> {
     return Observable.throw(error);
   }
 
@@ -71,6 +71,13 @@ export class BookStoreService {
       .map(rawBooks => rawBooks
         .map(rawBook => BookFactory.fromObject(rawBook))
       )
+      .catch(this.errorHandler);
+  }
+
+  check(isbn: string): Observable<Boolean> {
+    return this.http
+      .get(`${this.api}/book/${isbn}/check`)
+      .map(response => response.json())
       .catch(this.errorHandler);
   }
 

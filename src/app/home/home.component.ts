@@ -5,16 +5,17 @@ import { Book } from '../shared/book';
 @Component({
   selector: 'bm-home',
   template: `
-  <div class="ui container two column grid">
+
   <div class="ui container column">
-    <h1>Home</h1>
-    <p>Das ist der BookMonkey.</p>
+    <h1>BookMonkey</h1>
     <a routerLink="../books" class="ui red button">
       Buchliste ansehen
       <i class="right arrow icon"></i>
     </a>
-  </div>
-  <bm-search (bookSelected)="bookSelected($event)" class="column"></bm-search>
+    <p></p>
+    <div class="ui divider"></div>
+    <h3>Suche nach Büchern:</h3>
+    <bm-search (bookSelected)="bookSelected($event)" class="column"></bm-search>
   </div>
   `
 })

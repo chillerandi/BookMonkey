@@ -1,18 +1,18 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+
 import { Book } from '../shared/book';
 import { BookFactory } from '../shared/book-factory';
 import { BookStoreService } from '../shared/book-store.service';
 import { BookFormErrorMessages } from './book-form-error-messages';
+import { BookValidators } from '../shared/book.validators';
 
 @Component({
   selector: 'bm-book-form',
   templateUrl: './book-form.component.html'
 })
-
 export class BookFormComponent implements OnInit {
-  //  @ViewChild('myForm') myForm: NgForm;
   book = BookFactory.empty();
   errors: { [key: string]: string } = {};
   isUpdatingBook = false;
@@ -26,26 +26,31 @@ export class BookFormComponent implements OnInit {
     this.myForm = this.fb.group({
       title: [this.book.title, Validators.required],
       subtitle: this.book.subtitle,
-      isbn: [this.book.isbn, [Validators.required, Validators.minLength(10), Validators.maxLength(13)]],
+      isbn: [this.book.isbn, [
+        Validators.required,
+        BookValidators.isbnFormat
+      ], this.isUpdatingBook ? null : BookValidators.isbnExists(this.bs)],
       description: this.book.description,
       authors: this.authors,
       thumbnails: this.thumbnails,
       published: this.book.published
-
     });
     this.myForm.statusChanges.subscribe(() => this.updateErrorMessages());
   }
 
   buildAuthorsArray() {
-    this.authors = this.fb.array(this.book.authors, Validators.required);
+    this.authors = this.fb.array(this.book.authors, BookValidators.atLeastOneAuthor);
   }
 
   buildThumbnailsArray() {
     this.thumbnails = this.fb.array(
       this.book.thumbnails.map(
         t => this.fb.group({
-          url: this.fb.control(t.url), title: this.fb.control(t.title)
-        })))
+          url: this.fb.control(t.url),
+          title: this.fb.control(t.title)
+        })
+      )
+    );
   }
 
   addAuthorControl() {
@@ -53,12 +58,8 @@ export class BookFormComponent implements OnInit {
   }
 
   addThumbnailControl() {
-    this.thumbnails.push(this.fb.group({
-      url: null,
-      title: null
-    }));
+    this.thumbnails.push(this.fb.group({ url: null, title: null }));
   }
-
 
   constructor(
     private fb: FormBuilder,
@@ -75,17 +76,17 @@ export class BookFormComponent implements OnInit {
         .subscribe(book => {
           this.book = book;
           this.initBook();
-        })
+        });
     }
     this.initBook();
-    this.myForm.statusChanges.subscribe(() => this.updateErrorMessages());
   }
 
   submitForm() {
+    // filter empty values
     this.myForm.value.authors = this.myForm.value.authors.filter(author => author);
     this.myForm.value.thumbnails = this.myForm.value.thumbnails.filter(thumbnail => thumbnail.url);
 
-    const book = BookFactory.fromObject(this.myForm.value);
+    const book: Book = BookFactory.fromObject(this.myForm.value);
 
     if (this.isUpdatingBook) {
       this.bs.update(book).subscribe(res => {
@@ -104,10 +105,10 @@ export class BookFormComponent implements OnInit {
     for (const message of BookFormErrorMessages) {
       const control = this.myForm.get(message.forControl);
       if (control &&
-        control.dirty &&
-        control.invalid &&
-        control.errors[message.forValidator] &&
-        !this.errors[message.forControl]) {
+          control.dirty &&
+          control.invalid &&
+          control.errors[message.forValidator] &&
+          !this.errors[message.forControl]) {
         this.errors[message.forControl] = message.text;
       }
     }
