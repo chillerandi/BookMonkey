@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BookFactory } from '../shared/book-factory';
+
 import { Book } from '../shared/book';
+import { BookFactory } from '../shared/book-factory';
 import { BookStoreService } from '../shared/book-store.service';
 
 @Component({
@@ -13,8 +14,8 @@ export class BookDetailsComponent implements OnInit {
 
   constructor(
     private bs: BookStoreService,
-    private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
