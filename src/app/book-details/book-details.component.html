@@ -1,6 +1,6 @@
 <div class="ui grid" *ngIf="book">
   <div class="four wide column">
-    <img class="ui large image" [src]="book.thumbnails[0].url">
+    <img class="ui large image" [src]="book?.thumbnails && book?.thumbnails[0].url">
   </div>
   <div class="twelve wide column">
     <h1 class="ui header">{{ book.title }}</h1>
@@ -37,5 +37,7 @@
     </div>
   </div>
 </div>
-
-<button (click)="showBookList()" class="ui red button">Zurück zur Buchliste</button>
+<a class="ui red button" routerLink="../">Zurück zur Buchliste<i class="right arrow icon"></i></a>
+<button class="ui tiny red labeled icon button" (click)="removeBook()">
+  <i class="remove icon"></i>Buch löschen
+  </button>

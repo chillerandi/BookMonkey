@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { BookFormComponent } from './book-form/book-form.component';
 import { HomeComponent } from './home/home.component';
 import { BookListComponent } from './book-list/book-list.component';
 import { BookDetailsComponent } from './book-details/book-details.component';
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'books/:isbn',
     component: BookDetailsComponent
+  },
+  {
+    path: 'admin',
+    component: BookFormComponent
   }
 ];
 
