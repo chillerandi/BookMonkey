@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
-import { Book } from '../shared/book';
-import { BookFactory } from '../shared/book-factory';
-import { BookStoreService } from '../shared/book-store.service';
+import { Book } from '../../shared/book';
+import { BookFactory } from '../../shared/book-factory';
+import { BookStoreService } from '../../shared/book-store.service';
 import { BookFormErrorMessages } from './book-form-error-messages';
 import { BookValidators } from '../shared/book.validators';
 
@@ -26,10 +26,8 @@ export class BookFormComponent implements OnInit {
     this.myForm = this.fb.group({
       title: [this.book.title, Validators.required],
       subtitle: this.book.subtitle,
-      isbn: [this.book.isbn, [
-        Validators.required,
-        BookValidators.isbnFormat
-      ], this.isUpdatingBook ? null : BookValidators.isbnExists(this.bs)],
+      isbn: [this.book.isbn, [Validators.required, BookValidators.isbnFormat],
+      this.isUpdatingBook ? null : BookValidators.isbnExists(this.bs)],
       description: this.book.description,
       authors: this.authors,
       thumbnails: this.thumbnails,
@@ -105,10 +103,10 @@ export class BookFormComponent implements OnInit {
     for (const message of BookFormErrorMessages) {
       const control = this.myForm.get(message.forControl);
       if (control &&
-          control.dirty &&
-          control.invalid &&
-          control.errors[message.forValidator] &&
-          !this.errors[message.forControl]) {
+        control.dirty &&
+        control.invalid &&
+        control.errors[message.forValidator] &&
+        !this.errors[message.forControl]) {
         this.errors[message.forControl] = message.text;
       }
     }
